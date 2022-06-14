@@ -1,24 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState, createContext } from "react";
 
-function App() {
+import ExpenseComponent from "./components/ExpenseComponent/Expense";
+
+export const SpendingContext = createContext();
+
+function App(props) {
+  const [spendData, setSpendData] = useState([]);
+
+  useEffect(() => {
+    fecthData();
+  }, []);
+
+  async function fecthData() {
+    await fetch("./datas/data.json", {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((myJson) => setSpendData(myJson))
+      .catch((err) => console.error(err.message));
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <SpendingContext.Provider value={spendData}>
+      <ExpenseComponent spendData={props.spendData} />
+    </SpendingContext.Provider>
   );
 }
 
